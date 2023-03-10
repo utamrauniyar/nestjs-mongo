@@ -1,12 +1,36 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-
+// import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersModule } from './users/users.module';
+import { UserModule } from './users/user.module';
 
+/**
+ * Module for POSTGRES
+ */
 @Module({
-  imports: [MongooseModule.forRoot('mongodb://127.0.0.1/nestjs-mongo'), UsersModule],
+  imports: [
+    // ConfigModule.forRoot({ isGlobal: true }),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'localhost',
+      port: 5432,
+      username: 'postgres',
+      password: 'postgres',
+      database: 'postgres',
+      // type: 'postgres',
+      // host: process.env.POSTGRES_HOST,
+      // port: parseInt(<string>process.env.POSTGRES_PORT),
+      // username: process.env.POSTGRES_USER,
+      // password: process.env.POSTGRES_PASSWORD,
+      // database: process.env.POSTGRES_DATABASE,
+      // entities: [],
+      autoLoadEntities: true,
+      synchronize: true,
+    }),
+
+    UserModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
